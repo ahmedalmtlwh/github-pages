@@ -1,0 +1,31 @@
+async function fetchPricingFast(quantity) {
+    try {
+        document.getElementById('loader').style.display = 'block';
+        const response = await fetch(`/api/pricing?quantity=${quantity}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('فشل في جلب البيانات');
+        }
+
+        const data = await response.json();
+        document.getElementById('price').textContent = data.charge;
+    } catch (error) {
+        console.error('Error:', error);
+        alert('حدث خطأ أثناء معالجة الطلب');
+    } finally {
+        document.getElementById('loader').style.display = 'none';
+    }
+}
+
+document.getElementById('quantityInput').addEventListener('input', (event) => {
+    const quantity = event.target.value;
+    if (quantity) {
+        fetchPricingFast(quantity);
+    }
+});
